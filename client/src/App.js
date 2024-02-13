@@ -10,6 +10,7 @@ import TalesOfParthenuum from "./TalesOfParthenuum";
 import Home from "./Home";
 import { useState } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
+import Canvas from "./Canvas";
 
 // const WS_URL = "ws://talesofparthenuumserver.onrender.com:8000";
 
@@ -32,10 +33,38 @@ function App() {
         sendJsonMessage({ name });
     }
 
+    // let sideBar = document.querySelector('.side-bar');
+    // sideBar.onclick = () => {
+    //     sideBar.classList.toggle('collapse');
+    //     arrowCollapse.classList.toggle('collapse');
+    //     if (arrowCollapse.classList.contains('collapse')) {
+    //         arrowCollapse.classList =
+    //             'bx bx-arrow-from-left logo-name__icon collapse';
+    //     } else {
+    //         arrowCollapse.classList = 'bx bx-arrow-from-right logo-name__icon';
+    //     }
+    // };
+    function handleCollapse(e) {
+        console.log(e);
+        let sidebar = e.target;
+        sidebar.classList.toggle("side-collapse");
+
+        let arrowCollapse = e.target.children[0];
+
+        // sideBar.classList.toggle('collapse');
+        // arrowCollapse.classList.toggle('collapse');
+        if (arrowCollapse.classList.contains("collapse")) {
+            arrowCollapse.classList =
+                "bx bx-arrow-from-left logo-name__icon collapse";
+        } else {
+            arrowCollapse.classList = "bx bx-arrow-from-right logo-name__icon";
+        }
+    }
+
     return (
-        <div className="App">
+        <div className="App h-100">
             <BrowserRouter>
-                <nav className="navbar navbar-expand-lg bg-body-tertiary">
+                {/* <nav className="navbar navbar-expand-lg bg-body-tertiary">
                     <div class="container-fluid">
                         <a class="navbar-brand" href="#">
                             Navbar
@@ -84,43 +113,138 @@ function App() {
                             </ul>
                         </div>
                     </div>
-                </nav>
-                <button
+                </nav> */}
+                <div className="side-bar" onClick={handleCollapse}>
+                    <button className="logo-name__button">
+                        {" "}
+                        <i
+                            className="bx bx-arrow-from-right logo-name__icon"
+                            id="logo-name__icon"
+                        ></i>
+                    </button>
+
+                    <ul className="features-list">
+                        <li className="features-item">Character Sheet</li>
+                        <li className="features-item">Level Up</li>
+                        <li className="features-item">Item</li>
+                    </ul>
+                </div>
+                {/* <button
                     onClick={() => {
                         let x = sendJsonMessage({ message: "test!" });
                         console.log(x);
                     }}
                 >
                     send
-                </button>
-                <div class="container container-top-fix">
-                    <div className="main">
-                        <div className="grid-container">
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                        </div>
+                </button> */}
+                {/* <div class="main">
+                    <div class="grid-container">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
                     </div>
-                    {/* <img
-                        class="map"
-                        draggable="true"
-                        src="https://cdn.discordapp.com/attachments/408412703804227594/1132009353675821266/Untitled.png"
-                    />
-                    <input
-                        id="scaler"
-                        type="range"
-                        min="1"
-                        max="10"
-                        value="1"
-                    />
-                    <button class="sheet-button btn btn-primary">
-                        Character Sheet
-                    </button>
-                    <button class="action-button btn btn-danger">
-                        Actions
-                    </button> */}
-                </div>
+                </div> */}
+                <Canvas></Canvas>
+                {/* <div class="container container-top-fix"> */}
+
+                {/* <img
+                    class="map"
+                    draggable="true"
+                    src="https://cdn.discordapp.com/attachments/408412703804227594/1132009353675821266/Untitled.png"
+                /> */}
+                <input id="scaler" type="range" min="1" max="10" value="1" />
+                <button class="sheet-button btn btn-primary">
+                    Character Sheet
+                </button>
+                <button class="action-button btn btn-danger">Actions</button>
+
                 <Switch>
                     <Route path="/home">
                         <Home addName={addName} />
