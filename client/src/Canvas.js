@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import dnd from "./static/dnd.png";
+import token from "./static/token.jpg";
 
 function setupGameBoard(rows, cols) {
     let gameboard = [];
@@ -10,6 +11,8 @@ function setupGameBoard(rows, cols) {
         }
     }
     // console.log(gameboard);
+    gameboard[10][10] = token;
+
     return gameboard;
 }
 
@@ -27,7 +30,7 @@ const baseSettings = {
 const Canvas = (props) => {
     const canvasRef = useRef(null);
     const [clientMouseDown, setClientMouseDown] = useState(null);
-    const [hexGridState, setHexGridState] = useState(setupGameBoard(5, 5));
+    const [hexGridState, setHexGridState] = useState(setupGameBoard(25, 25));
 
     // function drawHex(ctx, x, y) {
     //     ctx.beginPath();
@@ -62,6 +65,27 @@ const Canvas = (props) => {
             ctx.stroke();
         }
 
+        function drawTokenHexagon(x, y, image) {
+            console.log(image);
+            ctx.beginPath();
+            ctx.moveTo(x + hexRadius, y);
+            for (let i = 1; i <= 6; i++) {
+                const angle = (i * 2 * Math.PI) / 6;
+                const newX = x + hexRadius * Math.cos(angle);
+                const newY = y + hexRadius * Math.sin(angle);
+                ctx.lineTo(newX, newY);
+            }
+            ctx.closePath();
+            ctx.clip();
+            ctx.drawImage(
+                image,
+                x - hexRadius,
+                y - hexRadius,
+                hexRadius * 2,
+                hexRadius * 2
+            );
+        }
+
         // draws a hexagon at x y location
         function drawHexagon(x, y) {
             ctx.beginPath();
@@ -93,6 +117,7 @@ const Canvas = (props) => {
             for (let row = 0; row < rows; row++) {
                 // setHexGridState((arr) => [...arr, []]);
                 for (let col = 0; col < cols; col++) {
+                    console.log("iterate");
                     // let tempRow = [...hexGridState[row], null];
                     // setHexGridState((arr) => [...arr]);
                     const x = col * (hexWidth * 0.9);
@@ -101,6 +126,17 @@ const Canvas = (props) => {
                     // console.log(hexGridState[row][col]);
 
                     drawHexagon(x, y);
+                    if (hexGridState[row][col]) {
+                        console.log("reach");
+                        const playerImage = new Image();
+                        playerImage.src = hexGridState[row][col]; // Replace with the path to your image
+                        console.log(dnd);
+                        playerImage.onload = function () {
+                            // ctx.drawImage(playerImage, x, y, 100, 100);
+                            // drawHexagonalGrid(25, 25);
+                            drawTokenHexagon(x, y, playerImage);
+                        };
+                    }
                 }
             }
         }
@@ -110,7 +146,7 @@ const Canvas = (props) => {
         console.log(dnd);
         backgroundImage.onload = function () {
             ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
-            drawHexagonalGrid(5, 5);
+            drawHexagonalGrid(25, 25);
         };
     }, [clientMouseDown]);
 
@@ -137,13 +173,9 @@ const Canvas = (props) => {
         setClientMouseDown(null);
     };
 
-
     const handleMouseMove = (e) => {
-
         if (clientMouseDown) {
-
             setClientMouseDown({ x: e.clientX, y: e.clientY });
-
         }
     };
 
