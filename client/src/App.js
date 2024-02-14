@@ -239,7 +239,7 @@ function App() {
                     draggable="true"
                     src="https://cdn.discordapp.com/attachments/408412703804227594/1132009353675821266/Untitled.png"
                 /> */}
-                <input id="scaler" type="range" min="1" max="10" value="1" />
+                {/* <input id="scaler" type="range" min="1" max="10" value="1" /> */}
                 <button class="sheet-button btn btn-primary">
                     Character Sheet
                 </button>
