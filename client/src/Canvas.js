@@ -24,9 +24,7 @@ function setupGameBoard(rows, cols, settings = baseSettings) {
             gameboard[row].push({ x: x, y: y, player: null });
         }
     }
-    // console.log(gameboard);
     gameboard[2][2]["player"] = token;
-    // console.log(gameboard);
 
     return gameboard;
 }
@@ -51,30 +49,17 @@ function getGridCoordinates(x, y, canvas, gridState) {
 
     gridState.forEach((row, rowInd) => {
         row.forEach((col, colInd) => {
-            // console.log(col);
             let currDistance = distanceFormula(
                 mouseX,
                 mouseY,
                 col["x"],
                 col["y"]
             );
-            if (rowInd % 10 == 3) {
-                if (colInd % 10 == 3) {
-                    // closestNode[]
-                    // console.log(currDistance);
-                }
-            }
 
             if (
                 closestNode["distance"] &&
                 currDistance < closestNode["distance"]
             ) {
-                // console.log("closestUpdate!");
-                // console.log(row);
-                // console.log(col);
-
-                // console.log(currDistance);
-                // closestNode["row"];
                 closestNode = {
                     row: rowInd,
                     col: colInd,
@@ -89,7 +74,6 @@ function getGridCoordinates(x, y, canvas, gridState) {
             }
         });
     });
-    console.log(closestNode);
     return { col: closestNode["col"], row: closestNode["row"] };
 }
 
@@ -114,7 +98,6 @@ function drawHexagon(x, y, canvas, image = null, options = null) {
     ctx.stroke();
     if (image) {
         ctx.clip();
-
         ctx.drawImage(
             image,
             canvasX - hexRadius,
@@ -125,29 +108,11 @@ function drawHexagon(x, y, canvas, image = null, options = null) {
         ctx.restore();
     }
     if (options) {
-        // console.log("precheck");
-        // console.log(options);
-        // options: {
-        //     action: "checkLocation",
-        //     values: {
-        //         x: clientMouseDown.x,
-        //         y: clientMouseDown.y,
-        //     },
-        // },
-        // console.log(options.options);
-
-        // const x = col * (hexWidth * 0.9);
-        // const y = row * yOffset + ((col % 2) * yOffset) / 2;
-
         if (options["action"] == "checkLocation") {
             let optionX = options.values.x;
             let optionY = options.values.y;
-            // let { x, y } = getGridCoordinates(optionX, optionY, canvas);
-            // console.log(x);
-            // console.log(y);
+
             if (ctx.isPointInPath(options.values.x, options.values.y)) {
-                // drawDraggedHexagon(clientX, clientY);
-                console.log("true");
                 return true;
             } else {
                 return false;
@@ -158,8 +123,6 @@ function drawHexagon(x, y, canvas, image = null, options = null) {
 
 // draws from left to right
 function drawHexagonalGrid(
-    rows,
-    cols,
     canvas,
     gridState,
     settings = baseSettings,
@@ -173,32 +136,32 @@ function drawHexagonalGrid(
             drawHexagon(col.x, col.y, canvas);
         });
     });
-    for (let row = 0; row < rows; row++) {
-        // setHexGridState((arr) => [...arr, []]);
-        for (let col = 0; col < cols; col++) {
-            // console.log("iterate");
-            // let tempRow = [...hexGridState[row], null];
-            // setHexGridState((arr) => [...arr]);
-            const x = col * (hexWidth * 0.9);
-            const y = row * yOffset + ((col % 2) * yOffset) / 2;
+    // for (let row = 0; row < rows; row++) {
+    //     // setHexGridState((arr) => [...arr, []]);
+    //     for (let col = 0; col < cols; col++) {
+    //         // console.log("iterate");
+    //         // let tempRow = [...hexGridState[row], null];
+    //         // setHexGridState((arr) => [...arr]);
+    //         const x = col * (hexWidth * 0.9);
+    //         const y = row * yOffset + ((col % 2) * yOffset) / 2;
 
-            // console.log(hexGridState[row][col]);
-            // console.log(clientMouseDown);
-            if (options) {
-                if (options["checkLocation"]) {
-                    const isInTile = drawHexagon(x, y, canvas, null, {
-                        action: "checkLocation",
-                        values: {
-                            x: options["checkLocation"].x,
-                            y: options["checkLocation"].y,
-                        },
-                    });
-                }
-            } else {
-                drawHexagon(x, y, canvas);
-            }
-        }
-    }
+    //         // console.log(hexGridState[row][col]);
+    //         // console.log(clientMouseDown);
+    //         if (options) {
+    //             if (options["checkLocation"]) {
+    //                 const isInTile = drawHexagon(x, y, canvas, null, {
+    //                     action: "checkLocation",
+    //                     values: {
+    //                         x: options["checkLocation"].x,
+    //                         y: options["checkLocation"].y,
+    //                     },
+    //                 });
+    //             }
+    //         } else {
+    //             drawHexagon(x, y, canvas);
+    //         }
+    //     }
+    // }
 }
 
 function setupImage(link) {
@@ -220,18 +183,8 @@ const Canvas = (props) => {
     const [image, setImage] = useState(
         setupImage(hexGridState[2][2]["player"])
     );
-    // function drawHex(ctx, x, y) {
-    //     ctx.beginPath();
-    //     for (let i = 0; i < 6; i++) {
-    //         const angle = (Math.PI / 3) * i;
-    //         const cx = x + hexWidth * Math.cos(angle);
-    //         const cy = y + hexHeight * Math.sin(angle);
-    //         ctx.lineTo(cx, cy);
-    //     }
-    //     ctx.closePath();
-    //     ctx.stroke();
-    // }
-    function updateHexGridState(rowIndex, colIndex, newValue) {
+
+    function updateHexGridState(colIndex, rowIndex, newValue) {
         const newArr = hexGridState.map((row) => [...row]);
         console.log({ rowIndex, colIndex, newValue });
         newArr[rowIndex][colIndex]["player"] = newValue;
@@ -241,62 +194,65 @@ const Canvas = (props) => {
         const canvas2 = canvasRef2.current;
         const ctx2 = canvas2.getContext("2d");
         const { hexRadius, hexWidth, hexHeight } = baseSettings;
-        // draw a hexagon in a coordinate
 
-        // hard coded image check in state manager
-        // if (hexGridState[2][2]) {
-
-        // console.log(hexGridState);
         let fromCoordinates = null;
-        console.log(mouseDownLocation);
-        if (mouseDownLocation) {
+        let toCoordinates = null;
+        // console.log(mouseDownLocation);
+        let isPlayerAtStart = false;
+        if (mouseDownLocation && mouseUpLocation) {
             console.log(mouseDownLocation);
-            let clientX = mouseDownLocation["x"];
-            let clientY = mouseDownLocation["y"];
+
             fromCoordinates = getGridCoordinates(
-                clientX,
-                clientY,
+                mouseDownLocation.x,
+                mouseDownLocation.y,
                 canvas2,
                 hexGridState
             );
+            isPlayerAtStart = hexGridState[fromCoordinates.row][
+                fromCoordinates.col
+            ]["player"]
+                ? true
+                : false;
+            console.log(mouseDownLocation);
+            console.log(mouseUpLocation);
             console.log(fromCoordinates);
+            console.log(hexGridState[fromCoordinates.row][fromCoordinates.col]);
+            console.log(isPlayerAtStart);
+            if (isPlayerAtStart) {
+                console.log(
+                    hexGridState[fromCoordinates.col][fromCoordinates.row]
+                );
+                // let clientX = mouseDownLocation["x"];
+                // let clientY = mouseUpLocation["y"];
+
+                toCoordinates = getGridCoordinates(
+                    mouseDownLocation.x,
+                    mouseDownLocation.y,
+                    canvas2,
+                    hexGridState
+                );
+                console.log(fromCoordinates);
+                console.log(toCoordinates);
+            }
         }
-        let toCoordinates = null;
+
         ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
         let drawArray = [];
         console.log("rere");
         hexGridState.forEach((row, rowInd) => {
             row.forEach((col, colInd) => {
-                // console.log(col);
                 if (col && col["player"]) {
                     const yOffset = hexRadius * 1.7;
-                    const x = canvas2.offsetLeft + rowInd * (hexWidth * 0.9);
-                    const y = colInd * yOffset;
-                    // console.log("reach");
 
-                    // const playerImage = new Image();
-                    // playerImage.src = hexGridState[rowInd][colInd]; // Replace with the path to your image
+                    const x = col.x;
+                    const y = col.y;
+                    if (clientMouseDown) {
+                        let clientX = clientMouseDown["x"];
+                        let clientY = clientMouseDown["y"];
 
-                    // playerImage.onload = function () {
-                    // ctx.drawImage(playerImage, x, y, 100, 100);
-                    // drawHexagonalGrid(25, 25);
-                    if (mouseDownLocation) {
-                        console.log("mousedown");
-                        console.log(clientMouseDown);
-                        console.log(mouseDownLocation);
-                        let clientX = mouseDownLocation["x"];
-                        let clientY = mouseDownLocation["y"];
-                        console.log(mouseDownLocation);
-                        fromCoordinates = getGridCoordinates(
-                            clientX,
-                            clientY,
-                            canvas2,
-                            hexGridState
-                        );
                         drawHexagon(clientX, clientY, canvas2, image);
                         drawHexagon(x, y, canvas2, image);
                     } else {
-                        console.log("drawnyunage");
                         drawHexagon(x, y, canvas2, image);
                     }
                     // };
@@ -313,14 +269,21 @@ const Canvas = (props) => {
                 hexGridState
             );
         }
-        if (mouseUpLocation && mouseDownLocation) {
-            let temp = hexGridState[2][2]["player"];
-            console.log(fromCoordinates);
-            updateHexGridState(
-                fromCoordinates.x,
-                fromCoordinates.y,
-                hexGridState[2][2]["player"]
-            );
+        if (fromCoordinates && toCoordinates) {
+            if (isPlayerAtStart) {
+                let temp = hexGridState[2][2]["player"];
+                console.log("FROM TO REACH");
+                console.log(fromCoordinates);
+                console.log(toCoordinates);
+                updateHexGridState(
+                    fromCoordinates.col,
+                    fromCoordinates.row,
+                    null
+                );
+                updateHexGridState(toCoordinates.col, toCoordinates.row, image);
+            }
+            setMouseDownLocation(null);
+            setMouseUpLocation(null);
         }
     }, [clientMouseDown, mouseUpLocation, mouseDownLocation]);
     useEffect(() => {
@@ -333,32 +296,29 @@ const Canvas = (props) => {
         backgroundImage.src = dnd; // Replace with the path to your image
         backgroundImage.onload = function () {
             ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
-            drawHexagonalGrid(30, 30, canvas, hexGridState);
+            drawHexagonalGrid(canvas, hexGridState);
         };
     }, [mouseDownLocation, mouseUpLocation, hexGridState]);
 
     const handleMouseDown = (e) => {
         setClientMouseDown({ x: e.clientX, y: e.clientY });
         setMouseDownLocation({ x: e.clientX, y: e.clientY });
-        // let
         let ctx = canvasRef.current.getContext("2d");
 
         if (clientMouseDown) {
             let clientX = clientMouseDown["x"];
             let clientY = clientMouseDown["y"];
             setClientMouseDown({ x: clientX, y: clientY });
-            setMouseDownLocation({ x: clientX, y: clientY });
+            // setMouseDownLocation({ x: clientX, y: clientY });
         }
     };
 
     const handleMouseUp = (e) => {
-        console.log("up");
         setMouseUpLocation({ x: e.clientX, y: e.clientY });
         setClientMouseDown(null);
     };
 
     const handleMouseMove = (e) => {
-        // setActionGridLocation({ x: e.clientX, y: e.clientY });
         if (clientMouseDown) {
             setClientMouseDown({ x: e.clientX, y: e.clientY });
         }
@@ -370,11 +330,7 @@ const Canvas = (props) => {
                 onMouseMove={handleMouseMove}
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}
-                // draggable="true"
-                // onDrag={handleDrag}
                 ref={canvasRef2}
-                // style={{ border: "1px solid #ccc" }}
-                // id="hexagonCanvas"
                 style={{ position: "absolute" }}
                 width="1900"
                 height="1300"
@@ -384,11 +340,7 @@ const Canvas = (props) => {
                 onMouseMove={handleMouseMove}
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}
-                // draggable="true"
-                // onDrag={handleDrag}
                 ref={canvasRef}
-                // style={{ border: "1px solid #ccc" }}
-                // id="hexagonCanvas"
                 width="1900"
                 height="1300"
                 {...props}
