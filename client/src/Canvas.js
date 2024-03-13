@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import dnd from "./static/dnd.png";
 import token from "./static/token.jpg";
-
+import useWebSocket from "react-use-websocket";
 const baseSettings = {
     hexRadius: 30,
     hexWidth: Math.sqrt(3) * 30,
     hexHeight: 2 * 30,
 };
-function setupGameBoard(rows, cols, settings = baseSettings) {
+function setupGameBoard(rows, cols, sendData, settings = baseSettings) {
     const { hexRadius, hexWidth, hexHeight } = settings;
     const yOffset = hexRadius * 1.7;
 
@@ -39,7 +39,6 @@ function distanceFormula(x1, y1, x2, y2) {
 }
 
 function getGridCoordinates(x, y, canvas, gridState) {
-    console.log(gridState);
     const rect = canvas.getBoundingClientRect();
     const mouseX = x - rect.left;
     const mouseY = y - rect.top;
@@ -131,6 +130,8 @@ function drawHexagonalGrid(
     const { hexRadius, hexWidth, hexHeight } = settings;
     const yOffset = hexRadius * 1.7;
 
+    // console.log(gridState);
+    // console.log(typeof gridState);
     gridState.forEach((row, rowInd) => {
         row.forEach((col, colInd) => {
             drawHexagon(col.x, col.y, canvas);
@@ -145,8 +146,6 @@ function drawHexagonalGrid(
     //         const x = col * (hexWidth * 0.9);
     //         const y = row * yOffset + ((col % 2) * yOffset) / 2;
 
-    //         // console.log(hexGridState[row][col]);
-    //         // console.log(clientMouseDown);
     //         if (options) {
     //             if (options["checkLocation"]) {
     //                 const isInTile = drawHexagon(x, y, canvas, null, {
@@ -164,15 +163,25 @@ function drawHexagonalGrid(
     // }
 }
 
-function setupImage(link) {
+function setupImage() {
     const playerImage = new Image();
-    playerImage.src = link;
+    playerImage.src = token;
     // image.src = link;
     return playerImage;
 }
 
-const Canvas = (props) => {
-    // console.log("rerender");
+function handleEvent(data, dataSetter) {
+    // console.log(data.data);
+    let parsedData = JSON.parse(data.data);
+    if (parsedData.type == "update") {
+        console.log(JSON.parse(parsedData.data));
+        dataSetter(JSON.parse(parsedData.data));
+    }
+    console.log(parsedData);
+    console.log(parsedData.type);
+}
+const WS_URL = "ws://localhost:8000";
+const Canvas = () => {
     const canvasRef = useRef(null);
     const canvasRef2 = useRef(null);
     const [clientMouseDown, setClientMouseDown] = useState(null);
@@ -180,13 +189,50 @@ const Canvas = (props) => {
     const [actionGridLocation, setActionGridLocation] = useState(null);
     const [mouseDownLocation, setMouseDownLocation] = useState(null);
     const [mouseUpLocation, setMouseUpLocation] = useState(null);
-    const [image, setImage] = useState(
-        setupImage(hexGridState[2][2]["player"])
-    );
+    const [image, setImage] = useState(setupImage());
+
+    const {
+        lastJsonMessage,
+        lastMessage,
+        sendJsonMessage,
+        sendMessage,
+        readyState,
+    } = useWebSocket(WS_URL, {
+        onOpen: () => {
+            console.log("WebSocket connection established.");
+        },
+        share: true,
+        filter: () => false,
+        retryOnError: true,
+        shouldReconnect: () => true,
+        onMessage: (data) => {
+            console.log(JSON.parse(data.data.toString()));
+            // if (typeof data.data == "array") {
+            console.log(typeof data.data);
+            console.log(typeof JSON.parse(data.data));
+            console.log(JSON.parse(data.data));
+            // console.log(JSON.parse(JSON.parse(data.data)));
+            handleEvent(data, setHexGridState);
+            // if (JSON.parse(data.data).type == "update") {
+            //     setHexGridState(JSON.parse(JSON.parse(data.data).type));
+            // }
+
+            // console.log(hexGridState);
+            // setHexGridState(JSON.parse(JSON.parse(data.data)));
+            // console.log(hexGridState);
+            // }
+            // console.log(data);
+            // // JSON.parse(data.data.toString());
+            // console.log(JSON.parse(data.data.toString()));
+        },
+    });
+
+    function sendData(data) {
+        sendJsonMessage(JSON.stringify(data));
+    }
 
     function updateHexGridState(colIndex, rowIndex, newValue) {
         const newArr = hexGridState.map((row) => [...row]);
-        console.log({ rowIndex, colIndex, newValue });
         newArr[rowIndex][colIndex]["player"] = newValue;
         setHexGridState(newArr);
     }
@@ -197,11 +243,8 @@ const Canvas = (props) => {
 
         let fromCoordinates = null;
         let toCoordinates = null;
-        // console.log(mouseDownLocation);
         let isPlayerAtStart = false;
         if (mouseDownLocation && mouseUpLocation) {
-            console.log(mouseDownLocation);
-
             fromCoordinates = getGridCoordinates(
                 mouseDownLocation.x,
                 mouseDownLocation.y,
@@ -213,15 +256,7 @@ const Canvas = (props) => {
             ]["player"]
                 ? true
                 : false;
-            console.log(mouseDownLocation);
-            console.log(mouseUpLocation);
-            console.log(fromCoordinates);
-            console.log(hexGridState[fromCoordinates.row][fromCoordinates.col]);
-            console.log(isPlayerAtStart);
             if (isPlayerAtStart) {
-                console.log(
-                    hexGridState[fromCoordinates.col][fromCoordinates.row]
-                );
                 // let clientX = mouseDownLocation["x"];
                 // let clientY = mouseUpLocation["y"];
 
@@ -231,14 +266,12 @@ const Canvas = (props) => {
                     canvas2,
                     hexGridState
                 );
-                console.log(fromCoordinates);
-                console.log(toCoordinates);
             }
         }
 
         ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
         let drawArray = [];
-        console.log("rere");
+        console.log(hexGridState);
         hexGridState.forEach((row, rowInd) => {
             row.forEach((col, colInd) => {
                 if (col && col["player"]) {
@@ -272,20 +305,18 @@ const Canvas = (props) => {
         if (fromCoordinates && toCoordinates) {
             if (isPlayerAtStart) {
                 let temp = hexGridState[2][2]["player"];
-                console.log("FROM TO REACH");
-                console.log(fromCoordinates);
-                console.log(toCoordinates);
                 updateHexGridState(
                     fromCoordinates.col,
                     fromCoordinates.row,
                     null
                 );
                 updateHexGridState(toCoordinates.col, toCoordinates.row, image);
+                sendData(hexGridState);
             }
             setMouseDownLocation(null);
             setMouseUpLocation(null);
         }
-    }, [clientMouseDown, mouseUpLocation, mouseDownLocation]);
+    }, [clientMouseDown, mouseUpLocation, mouseDownLocation, hexGridState]);
     useEffect(() => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d");
@@ -296,6 +327,7 @@ const Canvas = (props) => {
         backgroundImage.src = dnd; // Replace with the path to your image
         backgroundImage.onload = function () {
             ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+            console.log(hexGridState);
             drawHexagonalGrid(canvas, hexGridState);
         };
     }, [mouseDownLocation, mouseUpLocation, hexGridState]);
@@ -334,7 +366,6 @@ const Canvas = (props) => {
                 style={{ position: "absolute" }}
                 width="1900"
                 height="1300"
-                {...props}
             />
             <canvas
                 onMouseMove={handleMouseMove}
@@ -343,7 +374,6 @@ const Canvas = (props) => {
                 ref={canvasRef}
                 width="1900"
                 height="1300"
-                {...props}
             />
         </div>
     );

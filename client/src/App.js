@@ -8,51 +8,26 @@ import {
 } from "react-router-dom";
 import TalesOfParthenuum from "./TalesOfParthenuum";
 import Home from "./Home";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import Canvas from "./Canvas";
 
 // const WS_URL = "ws://talesofparthenuumserver.onrender.com:8000";
 
-const WS_URL = "ws://localhost:8000";
 function App() {
-    const { lastJsonMessage, sendJsonMessage, sendMessage, readyState } =
-        useWebSocket(WS_URL, {
-            onOpen: () => {
-                console.log("WebSocket connection established.");
-            },
-            share: true,
-            filter: () => false,
-            retryOnError: true,
-            shouldReconnect: () => true,
-        });
-
     const [messages, setMessages] = useState([]);
 
-    function addName(name) {
-        sendJsonMessage({ name });
-    }
+    // useEffect(() => {
+    //     console.log(lastJsonMessage);
+    //     console.log(lastMessage);
+    // }, [lastJsonMessage, lastMessage]);
 
-    // let sideBar = document.querySelector('.side-bar');
-    // sideBar.onclick = () => {
-    //     sideBar.classList.toggle('collapse');
-    //     arrowCollapse.classList.toggle('collapse');
-    //     if (arrowCollapse.classList.contains('collapse')) {
-    //         arrowCollapse.classList =
-    //             'bx bx-arrow-from-left logo-name__icon collapse';
-    //     } else {
-    //         arrowCollapse.classList = 'bx bx-arrow-from-right logo-name__icon';
-    //     }
-    // };
     function handleCollapse(e) {
         console.log(e);
         let sidebar = e.target;
         sidebar.classList.toggle("side-collapse");
-
         let arrowCollapse = e.target.children[0];
 
-        // sideBar.classList.toggle('collapse');
-        // arrowCollapse.classList.toggle('collapse');
         if (arrowCollapse.classList.contains("collapse")) {
             arrowCollapse.classList =
                 "bx bx-arrow-from-left logo-name__icon collapse";
@@ -247,7 +222,7 @@ function App() {
 
                 <Switch>
                     <Route path="/home">
-                        <Home addName={addName} />
+                        <Home />
                     </Route>
                     <Route path="/TalesOfParthenuum">
                         <TalesOfParthenuum />

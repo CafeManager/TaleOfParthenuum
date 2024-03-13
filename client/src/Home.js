@@ -16,15 +16,13 @@ function Home({ addName }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        addName(formData);
+        // addName(formData);
         setFormData(INITIAL_DATA);
     };
 
     return (
         <div className="container-fluid">
-            <div className="row align-items-center">
-                
-            </div>
+            <div className="row align-items-center"></div>
         </div>
     );
 }
