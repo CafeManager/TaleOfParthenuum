@@ -12,9 +12,7 @@
   margin-top: 10px;
 }
 
-h1 {
-  position: absolute
-}
+
 
 #scaler {
   -webkit-appearance: slider-vertical;
@@ -176,4 +174,19 @@ h1 {
   padding-bottom: 1rem;
   border-bottom: 1px solid #292932;
   list-style: none;
+}
+
+.details {
+  position: absolute;
+  top: -100px;
+  right: 0;
+  width: 200px;
+  height: 100px;
+  border: 3px solid #73AD21;
+}
+
+.character-sheet {
+  bottom: 1rem;
+  left: 2rem;
+  position: fixed;
 }

@@ -17,11 +17,6 @@ import Canvas from "./Canvas";
 function App() {
     const [messages, setMessages] = useState([]);
 
-    // useEffect(() => {
-    //     console.log(lastJsonMessage);
-    //     console.log(lastMessage);
-    // }, [lastJsonMessage, lastMessage]);
-
     function handleCollapse(e) {
         console.log(e);
         let sidebar = e.target;
@@ -39,59 +34,8 @@ function App() {
     return (
         <div className="App h-100">
             <BrowserRouter>
-                {/* <nav className="navbar navbar-expand-lg bg-body-tertiary">
-                    <div class="container-fluid">
-                        <a class="navbar-brand" href="#">
-                            Navbar
-                        </a>
-                        <button
-                            class="navbar-toggler"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#navbarNav"
-                            aria-controls="navbarNav"
-                            aria-expanded="false"
-                            aria-label="Toggle navigation"
-                        >
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
-
-                        <div class="collapse navbar-collapse" id="navbarNav">
-                            <ul class="navbar-nav">
-                                <li class="nav-item">
-                                    <a
-                                        class="nav-link active"
-                                        aria-current="page"
-                                        href="#"
-                                    >
-                                        Home
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        Features
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        Pricing
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a
-                                        class="nav-link disabled"
-                                        aria-disabled="true"
-                                    >
-                                        Disabled
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </nav> */}
                 <div className="side-bar" onClick={handleCollapse}>
                     <button className="logo-name__button">
-                        {" "}
                         <i
                             className="bx bx-arrow-from-right logo-name__icon"
                             id="logo-name__icon"
@@ -112,114 +56,29 @@ function App() {
                 >
                     send
                 </button> */}
-                {/* <div class="main">
-                    <div class="grid-container">
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                    </div>
-                </div> */}
+
                 <Canvas></Canvas>
-                {/* <div class="container container-top-fix"> */}
-
-                {/* <img
-                    class="map"
-                    draggable="true"
-                    src="https://cdn.discordapp.com/attachments/408412703804227594/1132009353675821266/Untitled.png"
-                /> */}
-                {/* <input id="scaler" type="range" min="1" max="10" value="1" /> */}
-                <button class="sheet-button btn btn-primary">
-                    Character Sheet
-                </button>
-                <button class="action-button btn btn-danger">Actions</button>
-
+                <div className="character-sheet">
+                    <div className="bg-light">
+                        <div className="ms-3 my-3 text-start">
+                            <i class="fa-solid fa-diamond"></i>
+                            <span> Swing sword </span>
+                            <br></br>
+                            <i class="fa-solid fa-diamond"></i>
+                            <span> Sleep </span>
+                            <br></br> <i class="fa-solid fa-diamond"></i>
+                            <span> Cast spell </span>
+                            <br></br> <i class="fa-solid fa-diamond"></i>
+                            <span> Somersault </span>
+                            <br></br>
+                        </div>
+                    </div>
+                    <button class=" btn btn-primary ">
+                        Character Sheet
+                        {/* <h1 className="details"> details </h1> */}
+                    </button>
+                    <button class=" btn btn-danger ms-3">Actions</button>
+                </div>
                 <Switch>
                     <Route path="/home">
                         <Home />
