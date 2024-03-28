@@ -75,7 +75,6 @@ function App() {
                     </div>
                     <button class=" btn btn-primary ">
                         Character Sheet
-                        {/* <h1 className="details"> details </h1> */}
                     </button>
                     <button class=" btn btn-danger ms-3">Actions</button>
                 </div>

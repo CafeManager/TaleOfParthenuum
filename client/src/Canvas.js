@@ -40,8 +40,8 @@ function distanceFormula(x1, y1, x2, y2) {
 
 function getGridCoordinates(x, y, canvas, gridState) {
     const rect = canvas.getBoundingClientRect();
-    const mouseX = x - rect.left;
-    const mouseY = y - rect.top;
+    const mouseX = x;
+    const mouseY = y;
     const { hexRadius, hexWidth, hexHeight } = baseSettings;
 
     let closestNode = { x: 0, y: 0 };
@@ -81,8 +81,9 @@ function drawHexagon(x, y, canvas, image = null, options = null) {
     const yOffset = hexRadius * 1.7;
     let ctx = canvas.getContext("2d");
     let rect = canvas.getBoundingClientRect();
-    const canvasX = x - rect.left;
-    const canvasY = y - rect.top;
+    const canvasX = x;
+    const canvasY = y;
+    // console.log(rect);
 
     ctx.save();
     ctx.beginPath();
@@ -271,7 +272,7 @@ const Canvas = () => {
 
         ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
         let drawArray = [];
-        console.log(hexGridState);
+        // console.log(hexGridState);
         hexGridState.forEach((row, rowInd) => {
             row.forEach((col, colInd) => {
                 if (col && col["player"]) {
@@ -333,26 +334,28 @@ const Canvas = () => {
     }, [mouseDownLocation, mouseUpLocation, hexGridState]);
 
     const handleMouseDown = (e) => {
-        setClientMouseDown({ x: e.clientX, y: e.clientY });
-        setMouseDownLocation({ x: e.clientX, y: e.clientY });
+        setClientMouseDown({ x: e.pageX, y: e.pageY });
+        setMouseDownLocation({ x: e.pageX, y: e.pageY });
         let ctx = canvasRef.current.getContext("2d");
-
+        console.log(e.pageX);
+        console.log(e);
         if (clientMouseDown) {
             let clientX = clientMouseDown["x"];
             let clientY = clientMouseDown["y"];
+
             setClientMouseDown({ x: clientX, y: clientY });
             // setMouseDownLocation({ x: clientX, y: clientY });
         }
     };
 
     const handleMouseUp = (e) => {
-        setMouseUpLocation({ x: e.clientX, y: e.clientY });
+        setMouseUpLocation({ x: e.pageX, y: e.pageY });
         setClientMouseDown(null);
     };
 
     const handleMouseMove = (e) => {
         if (clientMouseDown) {
-            setClientMouseDown({ x: e.clientX, y: e.clientY });
+            setClientMouseDown({ x: e.pageX, y: e.pageY });
         }
     };
 
