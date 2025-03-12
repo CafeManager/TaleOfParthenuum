@@ -2,12 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import dnd from "./static/dnd.png";
 import token from "./static/token.jpg";
 import useWebSocket from "react-use-websocket";
+
 const baseSettings = {
     hexRadius: 30,
     hexWidth: Math.sqrt(3) * 30,
     hexHeight: 2 * 30,
 };
-function setupGameBoard(rows, cols, sendData, settings = baseSettings) {
+
+function setupGameBoard(rows, cols, sendData, settings) {
     const { hexRadius, hexWidth, hexHeight } = settings;
     const yOffset = hexRadius * 1.7;
 
@@ -42,7 +44,7 @@ function getGridCoordinates(x, y, canvas, gridState) {
     const rect = canvas.getBoundingClientRect();
     const mouseX = x;
     const mouseY = y;
-    const { hexRadius, hexWidth, hexHeight } = baseSettings;
+    // const { hexRadius, hexWidth, hexHeight } = baseSettings;
 
     let closestNode = { x: 0, y: 0 };
 
@@ -131,37 +133,11 @@ function drawHexagonalGrid(
     const { hexRadius, hexWidth, hexHeight } = settings;
     const yOffset = hexRadius * 1.7;
 
-    // console.log(gridState);
-    // console.log(typeof gridState);
     gridState.forEach((row, rowInd) => {
         row.forEach((col, colInd) => {
             drawHexagon(col.x, col.y, canvas);
         });
     });
-    // for (let row = 0; row < rows; row++) {
-    //     // setHexGridState((arr) => [...arr, []]);
-    //     for (let col = 0; col < cols; col++) {
-    //         // console.log("iterate");
-    //         // let tempRow = [...hexGridState[row], null];
-    //         // setHexGridState((arr) => [...arr]);
-    //         const x = col * (hexWidth * 0.9);
-    //         const y = row * yOffset + ((col % 2) * yOffset) / 2;
-
-    //         if (options) {
-    //             if (options["checkLocation"]) {
-    //                 const isInTile = drawHexagon(x, y, canvas, null, {
-    //                     action: "checkLocation",
-    //                     values: {
-    //                         x: options["checkLocation"].x,
-    //                         y: options["checkLocation"].y,
-    //                     },
-    //                 });
-    //             }
-    //         } else {
-    //             drawHexagon(x, y, canvas);
-    //         }
-    //     }
-    // }
 }
 
 function setupImage() {
@@ -182,11 +158,14 @@ function handleEvent(data, dataSetter) {
     console.log(parsedData.type);
 }
 const WS_URL = "ws://localhost:8000";
-const Canvas = () => {
+
+const Canvas = ({ settings = baseSettings }) => {
     const canvasRef = useRef(null);
     const canvasRef2 = useRef(null);
     const [clientMouseDown, setClientMouseDown] = useState(null);
-    const [hexGridState, setHexGridState] = useState(setupGameBoard(30, 30));
+    const [hexGridState, setHexGridState] = useState(
+        setupGameBoard(30, 30, null, settings)
+    );
     const [actionGridLocation, setActionGridLocation] = useState(null);
     const [mouseDownLocation, setMouseDownLocation] = useState(null);
     const [mouseUpLocation, setMouseUpLocation] = useState(null);
